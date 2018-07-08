@@ -65,9 +65,9 @@ var Word = function (myWord) {
 }
 
 //test word constructor
-var someWord = new Word("Utah");
-someWord.splitWord();
-someWord.generateLetters();
+// var someWord = new Word("Utah");
+// someWord.splitWord();
+// someWord.generateLetters();
 
-//Exports the Word constructor to be used and referenced in the index.js file.
+//Exports the Word constructor to be used and referenced in the game.js file.
 module.exports = Word;

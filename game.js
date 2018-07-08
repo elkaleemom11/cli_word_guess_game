@@ -1,21 +1,115 @@
-//This file requires the Word.js file
-var Word = require("./Word.js");
+// Pseudocode: deleted all the color and drawing code to simply things; however, code is not working!
 
-//Game requires inquirer npm package to prompt user.
+
+var Word = require("./word.js");
 var inquirer = require("inquirer");
 
-// Pseudocode to complete word game:
-// 1. install the npm inquirer package
-// 2. research to find out if there are any color/style cli packages available to add interest.
-// 3. determine whether there is something to draw on the command line?
-// 4. how to determine a letter vs a number a user may enter?
-// 5. is there something to use, say color, to note if a guess is incorrect?
-// 6. develop a theme and list of words, perhaps total of 10+ words? ie. "Camp Out" (tent, stakes, 
-// stove, headlamp, rope, tarp, sleeping bags, firewood, firer starter, matches, sunscreen, bug spray)
-// 7. create a var of correct guesses; set variable for true, but set default to false.
-// 8. create a counter for wins, losses, and guesses remaining. total of 10 guessess allowed?
-// 9. create a variable which holds the letter in once the user selects a letter
-// 10.create a variable to hold the letters the user already selected
-// 11.create a variable to underscore which will be filled in by a letter
-// 12.create a paragraph of written instructions on how to play the "Camp Out game"
-// 13.
+
+//This will be the Welcome screen
+console.log("Welcome to the Camp Out Word Guessing Game!");
+console.log("Theme is... Camp Out Game.");
+var howToPlay =
+    "==========================================================================================================" + "\r\n" +
+    "How to play" + "\r\n" +
+    "==========================================================================================================" + "\r\n" +
+    "When prompted to enter a letter, press any letter from a-z." + "\r\n" +
+    "Keep guessing a letter and when you guess a letter, your will either be correct or incorrect." + "\r\n" +
+    "If the letter is incorrect, the letter you guessed will not appear in the word." + "\r\n" +
+    "For every incorrect guess, the number of guesses remaining decrease by 1." + "\r\n" +
+    "If correct, the letter you guessed will appear in the word." + "\r\n" +
+    "If you guessed correctly, then all the letters in the word will appear until the remaining reaches 0, and you win." + "\r\n" +
+    "If you run out of guesses before the entire word is revealed, you lose. Game over." + "\r\n" +
+    "===========================================================================================================" + "\r\n"
+"You can exit the game at any time by pressing Ctrl + C on your keyboard." + "\r\n" +
+    "==========================================================================================================="
+console.log(howToPlay);
+
+
+var campOut = {
+    word_list: ["tent", "stakes", "stove", "headlamp", "rope", "tarp", "sleeping bags", "firewood", "firer starter", "matches", "sunscreen", "bug spray"],
+    guesses_remaining: 10,
+    guessedLetters: [],
+    current_word: null,
+
+    /* start_game: function () {
+        // clears guessedLetters before the newgame starts
+        if (this.guessedLetters.length > 0) {
+            this.guessedLetters = [];
+        };
+
+        inquirer.prompt([{
+            name: "play",
+            type: "confirm",
+            message: "ready to play?"
+        }]).then(function (answer) {
+            if (answer.play) {
+                campOut.new_game();
+            } else {
+                console.log("What's the point then?");
+            }
+        })
+    },*/
+
+    new_game: function () {
+        remainingGuesses = 10;
+        var selectedWord = words[Math.floor(Math.random() * words.length)];
+        var word = new Word(selectedWord);
+        console.log("Remaining guesses: " + remainingGuesses);
+        console.log("Initial word: " + word.selectedWord());
+        promptGuessLetter();
+    }
+}
+function promptGuessLetter() {
+    inquirer.prompt([
+        {
+            name: "guess",
+            message: "Guess a letter",
+            validate: function (input) {
+                return input.length == 1 && /^[a-z]+$/i.test(input);
+            }
+        }
+    ]).then(function (response) {
+        var guessedCorrectly = word.guessLetter(response.guess);
+        if (!guessedCorrectly) {
+            remainingGuesses--;
+            if (remainingGuesses <= 0) {
+                console.log("You lost!");
+                console.log("The correct word is: " + word.shownWord());
+                promptNewGame();
+                return
+            } else {
+                console.log("Remaining guesses: " + remainingGuesses);
+            }
+        }
+
+        console.log(word.shownWord());
+        if (word.guessed) {
+            console.log("You guessed the word!");
+            promptNewGame();
+        } else {
+            promptGuessLetter();
+        }
+    });
+}
+
+
+function promptNewGame() {
+    inquirer.prompt([
+        {
+            name: "answer",
+            type: "list",
+            message: "Would you like to play again?",
+            choices: ["Yes", "No"]
+        }
+    ]).then(function (response) {
+        if (response.answer == "No") {
+            // No
+            return
+        }
+        // Yes, play the game again
+        campOut_game();
+    });
+}
+
+
+
